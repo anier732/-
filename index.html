@@ -32,7 +32,7 @@
             margin-bottom: 5px;
             color: #b0b0d0;
         }
-        input[type="text"], select, textarea {
+        input[type="text"], input[type="number"], select, textarea {
             width: 100%;
             padding: 10px;
             background: #1e1e2f;
@@ -48,7 +48,7 @@
         button {
             margin-top: 20px;
             background: #5865F2;
-            color: #white;
+            color: #fff;
             border: none;
             padding: 12px 20px;
             font-size: 16px;
@@ -64,6 +64,9 @@
             font-size: 12px;
             color: #ff6b6b;
             margin-top: 8px;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -81,10 +84,16 @@
             <textarea id="consultMessage" required placeholder="相談内容をここに書けよ"></textarea>
 
             <label for="consultPayment">支払うもの</label>
-            <select id="consultPayment">
+            <select id="consultPayment" onchange="toggleAmountField()">
                 <option value="情報">情報</option>
                 <option value="お金（最高金額）">お金（最高金額）</option>
             </select>
+
+            <!-- 金額入力欄（初期状態は非表示） -->
+            <div id="amountFieldContainer" class="hidden">
+                <label for="consultAmount">支払う金額（円）</label>
+                <input type="number" id="consultAmount" placeholder="例: 5000">
+            </div>
 
             <div class="warning">※危険性のあるものやイタズラ、悪質な内容と判断した場合は反応・対応しません。</div>
 
@@ -94,7 +103,7 @@
 
     <hr style="border: 0; border-top: 1px solid #4e4e6a; margin: 40px 0;">
 
-    <!-- 情報提供フォーム -->
+    <!-- 情報提供ルーム -->
     <div class="form-section">
         <h2>情報提供ルーム</h2>
         <form id="infoForm">
@@ -115,17 +124,35 @@
 <script>
     const webhookURL = "https://discord.com/api/webhooks/1544319511082307584/jiK59EdOIzTkEZ0_KWF30XrFjjq6w2RkpZO9hwBRIjd1Lk58wBfou-jI2U1mpy57MKFw";
 
+    // 支払うもので「お金」が選ばれたときだけ金額入力欄を表示する関数
+    function toggleAmountField() {
+        const paymentSelect = document.getElementById('consultPayment');
+        const amountContainer = document.getElementById('amountFieldContainer');
+        if (paymentSelect.value === 'お金（最高金額）') {
+            amountContainer.classList.remove('hidden');
+        } else {
+            amountContainer.classList.add('hidden');
+            document.getElementById('consultAmount').value = ''; // 隠れたら中身をリセット
+        }
+    }
+
     // なんでも相談の送信処理
     document.getElementById('consultForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const insta = document.getElementById('consultInsta').value;
         const message = document.getElementById('consultMessage').value;
         const payment = document.getElementById('consultPayment').value;
+        const amount = document.getElementById('consultAmount').value;
+
+        let paymentText = payment;
+        if (payment === 'お金（最高金額）' && amount) {
+            paymentText = `お金（${Number(amount).toLocaleString()}円）`;
+        }
 
         const payload = {
-            content: "🚨 **【新着・なんでも相談】** 🚨\n" +
+            content: " **【なんでも相談】** \n" +
                      `> **インスタID:** ${insta}\n` +
-                     `> **支払うもの:** ${payment}\n` +
+                     `> **支払うもの:** ${paymentText}\n` +
                      `> **お悩み内容:**\n${message}`
         };
 
@@ -137,6 +164,9 @@
             });
             alert('相談を送信したよ！');
             document.getElementById('consultForm').reset();
+            toggleAmountField(); // フォームリセット後に金額欄も隠す
+        } else (err) {
+            // catchのエラー構文の修正
         } catch (err) {
             alert('送信に失敗したみたい…。');
             console.error(err);
@@ -150,11 +180,10 @@
         const content = document.getElementById('infoContent').value;
         const imageFile = document.getElementById('infoImage').files[0];
 
-        // 画像がある場合はFormDataを使う（Discordの仕様上、ファイル添付はmultipart/form-dataが必要）
         if (imageFile) {
             const formData = new FormData();
             formData.append('payload_json', JSON.stringify({
-                content: "🔥 **【新着・情報提供】** 🔥\n" +
+                content: " **【情報提供】** \n" +
                          `> **送信者:** ${sender}\n` +
                          `> **情報内容:**\n${content}`
             }));
@@ -172,9 +201,8 @@
                 console.error(err);
             }
         } else {
-            // 画像がない場合は通常のJSONで送る
             const payload = {
-                content: " **【情報提供】** \n" +
+                content: "🔥 **【新着・情報提供】** 🔥\n" +
                          `> **送信者:** ${sender}\n` +
                          `> **情報内容:**\n${content}`
             };
@@ -189,7 +217,8 @@
                 document.getElementById('infoForm').reset();
             } catch (err) {
                 alert('送信に失敗した…。');
-                console.error(err);
+
+
             }
         }
     });
