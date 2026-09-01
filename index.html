@@ -124,7 +124,7 @@
 <script>
     const webhookURL = "https://discord.com/api/webhooks/1544319511082307584/jiK59EdOIzTkEZ0_KWF30XrFjjq6w2RkpZO9hwBRIjd1Lk58wBfou-jI2U1mpy57MKFw";
 
-    // 支払うもので「お金」が選ばれたときだけ金額入力欄を表示する関数
+    // 金額入力欄の切り替え
     function toggleAmountField() {
         const paymentSelect = document.getElementById('consultPayment');
         const amountContainer = document.getElementById('amountFieldContainer');
@@ -132,7 +132,7 @@
             amountContainer.classList.remove('hidden');
         } else {
             amountContainer.classList.add('hidden');
-            document.getElementById('consultAmount').value = ''; // 隠れたら中身をリセット
+            document.getElementById('consultAmount').value = '';
         }
     }
 
@@ -150,7 +150,7 @@
         }
 
         const payload = {
-            content: " **【なんでも相談】** \n" +
+            content: "🚨 **【新着・なんでも相談】** 🚨\n" +
                      `> **インスタID:** ${insta}\n` +
                      `> **支払うもの:** ${paymentText}\n` +
                      `> **お悩み内容:**\n${message}`
@@ -164,9 +164,7 @@
             });
             alert('相談を送信したよ！');
             document.getElementById('consultForm').reset();
-            toggleAmountField(); // フォームリセット後に金額欄も隠す
-        } else (err) {
-            // catchのエラー構文の修正
+            toggleAmountField();
         } catch (err) {
             alert('送信に失敗したみたい…。');
             console.error(err);
@@ -180,46 +178,38 @@
         const content = document.getElementById('infoContent').value;
         const imageFile = document.getElementById('infoImage').files[0];
 
-        if (imageFile) {
-            const formData = new FormData();
-            formData.append('payload_json', JSON.stringify({
-                content: " **【情報提供】** \n" +
-                         `> **送信者:** ${sender}\n` +
-                         `> **情報内容:**\n${content}`
-            }));
-            formData.append('file', imageFile);
+        try {
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append('payload_json', JSON.stringify({
+                    content: "🔥 **【新着・情報提供】** 🔥\n" +
+                             `> **送信者:** ${sender}\n` +
+                             `> **情報内容:**\n${content}`
+                }));
+                formData.append('file', imageFile);
 
-            try {
                 await fetch(webhookURL, {
                     method: 'POST',
                     body: formData
                 });
-                alert('情報提供ありがとう！画像付きで送っといたぞ。');
-                document.getElementById('infoForm').reset();
-            } catch (err) {
-                alert('送信に失敗した…。');
-                console.error(err);
-            }
-        } else {
-            const payload = {
-                content: "🔥 **【新着・情報提供】** 🔥\n" +
-                         `> **送信者:** ${sender}\n` +
-                         `> **情報内容:**\n${content}`
-            };
+            } else {
+                const payload = {
+                    content: "🔥 **【新着・情報提供】** 🔥\n" +
+                             `> **送信者:** ${sender}\n` +
+                             `> **情報内容:**\n${content}`
+                };
 
-            try {
                 await fetch(webhookURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert('情報提供ありがとう！');
-                document.getElementById('infoForm').reset();
-            } catch (err) {
-                alert('送信に失敗した…。');
-
-
             }
+            alert('情報提供ありがとう！');
+            document.getElementById('infoForm').reset();
+        } catch (err) {
+            alert('送信に失敗した…。');
+            console.error(err);
         }
     });
 </script>
