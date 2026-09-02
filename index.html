@@ -4,288 +4,543 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>なんでも相談＆情報提供フォーム</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #1e1e2f;
-            color: #fff;
-            margin: 0;
-            padding: 15px;
-            box-sizing: border-box;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            background: #2a2a3d;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            box-sizing: border-box;
-        }
-        h1, h2 {
-            font-size: 1.3rem;
-            border-bottom: 2px solid #4e4e6a;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-        /* モード切り替えタブ */
-        .mode-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .mode-btn {
-            flex: 1;
-            padding: 12px;
-            background: #1e1e2f;
-            color: #b0b0d0;
-            border: 2px solid #4e4e6a;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .mode-btn.active {
-            background: #5865F2;
-            color: #fff;
-            border-color: #5865F2;
-        }
-        .form-section {
-            display: none;
-        }
-        .form-section.active {
-            display: block;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 6px;
-            color: #b0b0d0;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 12px;
-            background: #1e1e2f;
-            border: 1px solid #4e4e6a;
-            color: #fff;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #5865F2;
-        }
-        textarea {
-            resize: vertical;
-            height: 120px;
-        }
-        button.submit-btn {
-            margin-top: 25px;
-            background: #5865F2;
-            color: #fff;
-            border: none;
-            padding: 14px;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        button.submit-btn:hover {
-            background: #4752C4;
-        }
-        .warning {
-            font-size: 0.8rem;
-            color: #ff6b6b;
-            margin-top: 10px;
-            line-height: 1.4;
-        }
-        .hidden {
-            display: none;
-        }
-        input[type="file"] {
-            color: #b0b0d0;
-            font-size: 0.9rem;
-            padding: 8px 0;
-        }
-    </style>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: #1e1e2f;
+        color: #fff;
+        margin: 0;
+        padding: 15px;
+    }
+    .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        background: #2a2a3d;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+    h1, h2 {
+        font-size: 1.3rem;
+        border-bottom: 2px solid #4e4e6a;
+        padding-bottom: 10px;
+        margin-top: 0;
+    }
+    .mode-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    .mode-btn {
+        flex: 1;
+        padding: 12px;
+        background: #1e1e2f;
+        color: #b0b0d0;
+        border: 2px solid #4e4e6a;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .mode-btn.active {
+        background: #5865F2;
+        color: #fff;
+        border-color: #5865F2;
+    }
+    .form-section {
+        display: none;
+    }
+    .form-section.active {
+        display: block;
+    }
+    label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 6px;
+        color: #b0b0d0;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        background: #1e1e2f;
+        border: 1px solid #4e4e6a;
+        color: #fff;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #5865F2;
+    }
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+    input[type="file"] {
+        color: #b0b0d0;
+        font-size: 0.9rem;
+        padding: 8px 0;
+        width: 100%;
+    }
+    .submit-btn {
+        margin-top: 25px;
+        background: #5865F2;
+        color: #fff;
+        border: none;
+        padding: 14px;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+    }
+    .submit-btn:hover {
+        background: #4752C4;
+    }
+    .submit-btn:disabled {
+        background: #44445a;
+        cursor: not-allowed;
+    }
+    .warning {
+        font-size: 0.8rem;
+        color: #ff6b6b;
+        margin-top: 10px;
+        line-height: 1.4;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
 </head>
 <body>
-
 <div class="container">
-    <!-- モード選択ボタン -->
-    <div class="mode-selector">
-        <button type="button" class="mode-btn active" id="btnConsult" onclick="switchMode('consult')">なんでも相談</button>
-        <button type="button" class="mode-btn" id="btnInfo" onclick="switchMode('info')">情報提供</button>
-    </div>
-
-    <!-- なんでも相談フォーム -->
-    <div class="form-section active" id="sectionConsult">
-        <h1>なんでも相談フォーム</h1>
-        <form id="consultForm">
-            <label for="consultInsta">Instagram ID</label>
-            <input type="text" id="consultInsta" required placeholder="@username">
-
-            <label for="consultMessage">お悩み・して欲しいこと</label>
-            <textarea id="consultMessage" required placeholder="相談内容をここに書けよ"></textarea>
-
-            <label for="consultPayment">支払うもの</label>
-            <select id="consultPayment" onchange="toggleAmountField()">
-                <option value="情報">情報</option>
-                <option value="お金（最高金額）">お金（最高金額）</option>
-            </select>
-
-            <!-- 金額入力欄（初期状態は非表示） -->
-            <div id="amountFieldContainer" class="hidden">
-                <label for="consultAmount">支払う金額（円）</label>
-                <input type="number" id="consultAmount" placeholder="例: 5000">
-            </div>
-
-            <div class="warning">※危険性のあるものやイタズラ、悪質な内容と判断した場合は反応・対応しません。</div>
-
-            <button type="submit" class="submit-btn">相談を送信する</button>
-        </form>
-    </div>
-
-    <!-- 情報提供ルーム -->
-    <div class="form-section" id="sectionInfo">
-        <h2>情報提供ルーム</h2>
-        <form id="infoForm">
-            <label for="infoSender">送信者（Instagram ID または 匿名）</label>
-            <input type="text" id="infoSender" required placeholder="@username または 匿名">
-
-            <label for="infoContent">情報の内容</label>
-            <textarea id="infoContent" required placeholder="ヤバい情報とか教えてくれよ"></textarea>
-
-            <label for="infoImage">画像（任意）</label>
-            <input type="file" id="infoImage" accept="image/*">
-
-            <button type="submit" class="submit-btn">情報を送信する</button>
-        </form>
-    </div>
+<div class="mode-selector">
+    <button
+        type="button"
+        class="mode-btn active"
+        id="btnConsult"
+        onclick="switchMode('consult')"
+    >
+        なんでも相談
+    </button>
+    <button
+        type="button"
+        class="mode-btn"
+        id="btnInfo"
+        onclick="switchMode('info')"
+    >
+        情報提供
+    </button>
 </div>
-
+<!-- ==========================
+     なんでも相談
+=========================== -->
+<div
+    class="form-section active"
+    id="sectionConsult"
+>
+    <h1>なんでも相談フォーム</h1>
+    <form id="consultForm">
+        <label for="consultInsta">
+            Instagram ID
+        </label>
+        <input
+            type="text"
+            id="consultInsta"
+            required
+            placeholder="@username"
+            maxlength="100"
+        >
+        <label for="consultMessage">
+            お悩み・して欲しいこと
+        </label>
+        <textarea
+            id="consultMessage"
+            required
+            placeholder="相談内容をここに書けよ"
+            maxlength="2000"
+        ></textarea>
+        <label for="consultPayment">
+            支払うもの
+        </label>
+        <select
+            id="consultPayment"
+            onchange="toggleAmountField()"
+        >
+            <option value="情報">
+                情報
+            </option>
+            <option value="お金（最高金額）">
+                お金（最高金額）
+            </option>
+        </select>
+        <div
+            id="amountFieldContainer"
+            class="hidden"
+        >
+            <label for="consultAmount">
+                支払う金額（円）
+            </label>
+            <input
+                type="number"
+                id="consultAmount"
+                placeholder="例: 5000"
+                min="0"
+            >
+        </div>
+        <div class="warning">
+            ※危険性のあるものやイタズラ、悪質な内容と判断した場合は反応・対応しません。
+        </div>
+        <button
+            type="submit"
+            class="submit-btn"
+            id="consultButton"
+        >
+            相談を送信する
+        </button>
+    </form>
+</div>
+<!-- ==========================
+     情報提供
+=========================== -->
+<div
+    class="form-section"
+    id="sectionInfo"
+>
+    <h2>情報提供ルーム</h2>
+    <form id="infoForm">
+        <label for="infoSender">
+            送信者（Instagram ID または 匿名）
+        </label>
+        <input
+            type="text"
+            id="infoSender"
+            required
+            placeholder="@username または 匿名"
+            maxlength="100"
+        >
+        <label for="infoContent">
+            情報の内容
+        </label>
+        <textarea
+            id="infoContent"
+            required
+            placeholder="ヤバい情報とか教えてくれよ"
+            maxlength="2000"
+        ></textarea>
+        <label for="infoImage">
+            画像（任意）
+        </label>
+        <input
+            type="file"
+            id="infoImage"
+            accept="image/*"
+        >
+        <button
+            type="submit"
+            class="submit-btn"
+            id="infoButton"
+        >
+            情報を送信する
+        </button>
+    </form>
+</div>
+</div>
 <script>
-    const webhookURL = "https://discord.com/api/webhooks/1544590953753616484/H0_tRAvux5VPE7XwOuLlL1zyNRgqdWbPPq-y_db8UfA0EXFaw1d-DAcwrEpW3j7YDDhg";
-
-    // フォームの切り替え処理
-    function switchMode(mode) {
-        const btnConsult = document.getElementById('btnConsult');
-        const btnInfo = document.getElementById('btnInfo');
-        const sectionConsult = document.getElementById('sectionConsult');
-        const sectionInfo = document.getElementById('sectionInfo');
-
-        if (mode === 'consult') {
-            btnConsult.classList.add('active');
-            btnInfo.classList.remove('active');
-            sectionConsult.classList.add('active');
-            sectionInfo.classList.remove('active');
-        } else {
-            btnInfo.classList.add('active');
-            btnConsult.classList.remove('active');
-            sectionInfo.classList.add('active');
-            sectionConsult.classList.remove('active');
-        }
+/*
+==================================================
+Discord Webhook
+==================================================
+※このURLはブラウザ側に公開されます。
+GitHub Pagesで本格的に公開する場合は、
+Webhookを直接HTMLに入れる方式はおすすめしません。
+==================================================
+*/
+const webhookURL =
+"https://discord.com/api/webhooks/1544637575074152508/waOsaWxiHUEGFeAafNnU1MRf6nRS8LfgU3JksRwhU5IyMnjjDTFddyT2GxqYi2DiPmgn";
+/* =========================================
+   モード切り替え
+========================================= */
+function switchMode(mode) {
+    const btnConsult =
+        document.getElementById("btnConsult");
+    const btnInfo =
+        document.getElementById("btnInfo");
+    const sectionConsult =
+        document.getElementById("sectionConsult");
+    const sectionInfo =
+        document.getElementById("sectionInfo");
+    if (mode === "consult") {
+        btnConsult.classList.add("active");
+        btnInfo.classList.remove("active");
+        sectionConsult.classList.add("active");
+        sectionInfo.classList.remove("active");
+    } else {
+        btnInfo.classList.add("active");
+        btnConsult.classList.remove("active");
+        sectionInfo.classList.add("active");
+        sectionConsult.classList.remove("active");
     }
-
-    // 金額入力欄の切り替え
-    function toggleAmountField() {
-        const paymentSelect = document.getElementById('consultPayment');
-        const amountContainer = document.getElementById('amountFieldContainer');
-        if (paymentSelect.value === 'お金（最高金額）') {
-            amountContainer.classList.remove('hidden');
-        } else {
-            amountContainer.classList.add('hidden');
-            document.getElementById('consultAmount').value = '';
-        }
+}
+/* =========================================
+   金額欄
+========================================= */
+function toggleAmountField() {
+    const payment =
+        document.getElementById("consultPayment");
+    const container =
+        document.getElementById("amountFieldContainer");
+    const amount =
+        document.getElementById("consultAmount");
+    if (
+        payment.value ===
+        "お金（最高金額）"
+    ) {
+        container.classList.remove("hidden");
+    } else {
+        container.classList.add("hidden");
+        amount.value = "";
     }
-
-    // なんでも相談の送信処理
-    document.getElementById('consultForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const insta = document.getElementById('consultInsta').value;
-        const message = document.getElementById('consultMessage').value;
-        const payment = document.getElementById('consultPayment').value;
-        const amount = document.getElementById('consultAmount').value;
-
-        let paymentText = payment;
-        if (payment === 'お金（最高金額）' && amount) {
-            paymentText = `お金（${Number(amount).toLocaleString()}円）`;
+}
+/* =========================================
+   相談送信
+========================================= */
+document
+.getElementById("consultForm")
+.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const button =
+        document.getElementById("consultButton");
+    const insta =
+        document
+        .getElementById("consultInsta")
+        .value
+        .trim();
+    const message =
+        document
+        .getElementById("consultMessage")
+        .value
+        .trim();
+    const payment =
+        document
+        .getElementById("consultPayment")
+        .value;
+    const amount =
+        document
+        .getElementById("consultAmount")
+        .value;
+    let paymentText =
+        payment;
+    if (
+        payment === "お金（最高金額）" &&
+        amount
+    ) {
+        paymentText =
+            "お金（" +
+            Number(amount).toLocaleString() +
+            "円）";
+    }
+    const payload = {
+        content:
+            "🚨 **【新着・なんでも相談】** 🚨\n" +
+            "> **インスタID:** " +
+            insta +
+            "\n" +
+            "> **支払うもの:** " +
+            paymentText +
+            "\n" +
+            "> **お悩み内容:**\n" +
+            message
+    };
+    button.disabled = true;
+    button.textContent = "送信中...";
+    try {
+        /*
+        Discord Webhookへ直接送信
+        */
+        const response =
+            await fetch(
+                webhookURL +
+                "?wait=true",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify(payload)
+                }
+            );
+        if (!response.ok) {
+            throw new Error(
+                "Discord送信エラー: " +
+                response.status
+            );
         }
-
-        const payload = {
-            content: "🚨 **【新着・なんでも相談】** 🚨\n" +
-                     `> **インスタID:** ${insta}\n` +
-                     `> **支払うもの:** ${paymentText}\n` +
-                     `> **お悩み内容:**\n${message}`
-        };
-
-        try {
-            await fetch(webhookURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            alert('相談を送信したよ！');
-            document.getElementById('consultForm').reset();
-            toggleAmountField();
-        } catch (err) {
-            alert('送信に失敗したみたい…。');
-            console.error(err);
-        }
-    });
-
-    // 情報提供の送信処理
-    document.getElementById('infoForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const sender = document.getElementById('infoSender').value;
-        const content = document.getElementById('infoContent').value;
-        const imageFile = document.getElementById('infoImage').files[0];
-
-        try {
-            if (imageFile) {
-                const formData = new FormData();
-                formData.append('payload_json', JSON.stringify({
-                    content: "🔥 **【新着・情報提供】** 🔥\n" +
-                             `> **送信者:** ${sender}\n` +
-                             `> **情報内容:**\n${content}`
-                }));
-                formData.append('file', imageFile);
-
-                await fetch(webhookURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: formData
-                });
-            } else {
-                const payload = {
-                    content: "🔥 **【新着・情報提供】** 🔥\n" +
-                             `> **送信者:** ${sender}\n` +
-                             `> **情報内容:**\n${content}`
-                };
-
-                await fetch(webhookURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+        alert(
+            "相談を送信したよ！"
+        );
+        document
+        .getElementById("consultForm")
+        .reset();
+        toggleAmountField();
+    } catch(error) {
+        console.error(error);
+        alert(
+            "送信に失敗したみたい…。\n\n" +
+            "GitHub PagesからDiscord Webhookへの" +
+            "直接送信がCORSによって拒否されている可能性があります。"
+        );
+    }
+    button.disabled = false;
+    button.textContent =
+        "相談を送信する";
+});
+/* =========================================
+   情報提供送信
+========================================= */
+document
+.getElementById("infoForm")
+.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const button =
+        document.getElementById("infoButton");
+    const sender =
+        document
+        .getElementById("infoSender")
+        .value
+        .trim();
+    const content =
+        document
+        .getElementById("infoContent")
+        .value
+        .trim();
+    const imageInput =
+        document
+        .getElementById("infoImage");
+    const imageFile =
+        imageInput.files[0];
+    /* 画像サイズチェック */
+    if (
+        imageFile &&
+        imageFile.size >
+        8 * 1024 * 1024
+    ) {
+        alert(
+            "画像は8MB以下にしてください。"
+        );
+        return;
+    }
+    button.disabled = true;
+    button.textContent = "送信中...";
+    try {
+        /*
+        ======================================
+        画像あり
+        ======================================
+        */
+        if (imageFile) {
+            const formData =
+                new FormData();
+            formData.append(
+                "payload_json",
+                JSON.stringify({
+                    content:
+                        "🔥 **【新着・情報提供】** 🔥\n" +
+                        "> **送信者:** " +
+                        sender +
+                        "\n" +
+                        "> **情報内容:**\n" +
+                        content
+                })
+            );
+            formData.append(
+                "file",
+                imageFile
+            );
+            const response =
+                await fetch(
+                    webhookURL +
+                    "?wait=true",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+            if (!response.ok) {
+                throw new Error(
+                    "Discord送信エラー: " +
+                    response.status
+                );
             }
-            alert('情報提供ありがとう！');
-            document.getElementById('infoForm').reset();
-        } catch (err) {
-            alert('送信に失敗した…。');
-            console.error(err);
         }
-    });
+        /*
+        ======================================
+        画像なし
+        ======================================
+        */
+        else {
+            const payload = {
+                content:
+                    "🔥 **【新着・情報提供】** 🔥\n" +
+                    "> **送信者:** " +
+                    sender +
+                    "\n" +
+                    "> **情報内容:**\n" +
+                    content
+            };
+            const response =
+                await fetch(
+                    webhookURL +
+                    "?wait=true",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body:
+                            JSON.stringify(payload)
+                    }
+                );
+            if (!response.ok) {
+                throw new Error(
+                    "Discord送信エラー: " +
+                    response.status
+                );
+            }
+        }
+        alert(
+            "情報提供ありがとう！"
+        );
+        document
+        .getElementById("infoForm")
+        .reset();
+    } catch(error) {
+        console.error(error);
+        alert(
+            "送信に失敗した…。\n\n" +
+            "GitHub PagesからDiscord Webhookへの" +
+            "直接送信がCORSによって拒否されている可能性があります。"
+        );
+    }
+    button.disabled = false;
+    button.textContent =
+        "情報を送信する";
+});
 </script>
-
 </body>
 </html>
